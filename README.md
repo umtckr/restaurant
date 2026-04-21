@@ -1,6 +1,6 @@
-# Restaurant platform monorepo
+# Dinebird
 
-Full-stack restaurant management: **Django REST + Channels (WebSockets)** backend, **Next.js (App Router)** frontend.
+Full-stack restaurant operations platform: **Django REST + Channels (WebSockets)** backend, **Next.js (App Router)** frontend.
 
 - [Project structure](./PROJECT_STRUCTURE.md) — folder layout reference.
 - [Roadmap & backlog](./ROADMAP.md) — what is implemented and what comes next.

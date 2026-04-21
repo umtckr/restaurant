@@ -1,4 +1,4 @@
-# Restaurant platform — roadmap & backlog
+# Dinebird — roadmap & backlog
 
 This file tracks **what exists today**, **what to build next**, and **known gaps**. Update it as you ship.
 

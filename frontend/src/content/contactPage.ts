@@ -9,20 +9,20 @@ export const contactChannels = [
   {
     title: "Sales & demos",
     body: "New groups, expansions, and pricing conversations.",
-    action: "sales@tableline.example",
-    href: "mailto:sales@tableline.example",
+    action: "sales@dinebird.com",
+    href: "mailto:sales@dinebird.com",
   },
   {
     title: "Product support",
     body: "For existing customers with an active agreement.",
-    action: "support@tableline.example",
-    href: "mailto:support@tableline.example",
+    action: "support@dinebird.com",
+    href: "mailto:support@dinebird.com",
   },
   {
     title: "Partnerships",
     body: "POS, payments, and technology integrations.",
-    action: "partners@tableline.example",
-    href: "mailto:partners@tableline.example",
+    action: "partners@dinebird.com",
+    href: "mailto:partners@dinebird.com",
   },
 ];
 

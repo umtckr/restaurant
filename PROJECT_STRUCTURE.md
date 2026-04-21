@@ -1,4 +1,4 @@
-# Restaurant Platform — Project Structure
+# Dinebird — Project Structure
 
 Monorepo layout: **Next.js (frontend)** + **Django (backend API)**. Paths are relative to the repository root (`restaurant/`).
 
@@ -347,4 +347,4 @@ This document only describes structure. To generate **Next.js** and **Django** p
 
 ---
 
-*Generated for the restaurant management platform (multi-location franchise, global customer profile, QR sessions, flexible menus, payments & splits).*
+*Generated for Dinebird (multi-location franchise, global customer profile, QR sessions, flexible menus, payments & splits).*
