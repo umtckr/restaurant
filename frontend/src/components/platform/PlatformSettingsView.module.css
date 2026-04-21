@@ -1,0 +1,41 @@
+.tabList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-bottom: 1.5rem;
+  padding: 0.25rem;
+  border-radius: 12px;
+  background: var(--admin-surface-elevated, rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--admin-border-strong, rgba(255, 255, 255, 0.08));
+  width: fit-content;
+  max-width: 100%;
+}
+
+.tab {
+  padding: 0.55rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  font-family: inherit;
+  color: var(--admin-text-muted, #8b919d);
+  background: transparent;
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    background 0.15s ease;
+}
+
+.tab:hover {
+  color: var(--admin-text, #f4f4f6);
+}
+
+.tabActive {
+  color: var(--admin-text, #f4f4f6);
+  background: var(--admin-surface, #13161f);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.tabPanel {
+  min-height: 4rem;
+}

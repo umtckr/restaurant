@@ -1,0 +1,9 @@
+from django.apps import AppConfig
+
+
+class SessionsAppConfig(AppConfig):
+    default_auto_field = 'django.db.models.BigAutoField'
+    name = "apps.sessions_app"
+
+    def ready(self):
+        import apps.sessions_app.signals  # noqa: F401

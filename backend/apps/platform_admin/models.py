@@ -1,0 +1,22 @@
+from django.conf import settings
+from django.db import models
+
+from apps.core.models import TimeStampedModel, UUIDModel
+
+
+class AuditLog(UUIDModel, TimeStampedModel):
+    actor = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="audit_logs",
+    )
+    action = models.CharField(max_length=128)
+    object_type = models.CharField(max_length=128)
+    object_id = models.CharField(max_length=64, blank=True)
+    metadata = models.JSONField(default=dict, blank=True)
+
+    class Meta:
+        db_table = "platform_audit_log"
+        ordering = ["-created_at"]

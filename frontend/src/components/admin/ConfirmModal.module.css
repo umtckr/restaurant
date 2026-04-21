@@ -1,0 +1,90 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 900;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: fadeIn 0.15s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.panel {
+  width: 100%;
+  max-width: 420px;
+  border-radius: 14px;
+  background: var(--admin-surface, #13161f);
+  border: 1px solid var(--admin-border-strong, rgba(255, 255, 255, 0.1));
+  padding: 1.5rem;
+  animation: slideUp 0.15s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.title {
+  margin: 0 0 0.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--admin-text, #f4f4f6);
+}
+
+.body {
+  margin: 0 0 1.25rem;
+  font-size: 0.875rem;
+  color: var(--admin-text-muted, #8b919d);
+  line-height: 1.55;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--admin-text-muted, #8b919d);
+}
+
+.textarea {
+  padding: 0.6rem 0.75rem;
+  border-radius: 10px;
+  border: 1px solid var(--admin-border-strong, rgba(255, 255, 255, 0.1));
+  background: var(--admin-bg-elevated, #0e1016);
+  color: var(--admin-text, #f4f4f6);
+  font-size: 0.875rem;
+  outline: none;
+  min-height: 72px;
+  resize: vertical;
+}
+
+.textarea:focus {
+  border-color: rgba(196, 92, 38, 0.45);
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}

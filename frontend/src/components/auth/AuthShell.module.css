@@ -1,0 +1,294 @@
+/* Auth pages — premium light, matches marketing palette */
+
+.shell {
+  --ink: #141a22;
+  --ink-muted: #5c6570;
+  --ink-subtle: #8b939c;
+  --surface: #ffffff;
+  --canvas: #faf8f5;
+  --accent: #c45c26;
+  --accent-soft: rgba(196, 92, 38, 0.12);
+  --teal: #0d9488;
+  --teal-soft: rgba(13, 148, 136, 0.14);
+  --border: rgba(20, 26, 34, 0.1);
+  --shadow-md: 0 12px 40px rgba(20, 26, 34, 0.08);
+  --shadow-lg: 0 24px 64px rgba(20, 26, 34, 0.1);
+  --radius: 14px;
+  --radius-lg: 20px;
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--canvas);
+  color: var(--ink);
+}
+
+@media (min-width: 960px) {
+  .shell {
+    flex-direction: row;
+  }
+}
+
+/* Brand panel */
+.panel {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 2.5rem 3rem 2rem;
+  background: linear-gradient(
+    155deg,
+    #fff7ed 0%,
+    #ffedd5 40%,
+    #ecfdf5 100%
+  );
+  border-right: 1px solid rgba(251, 191, 36, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+@media (min-width: 960px) {
+  .panel {
+    display: flex;
+    width: 44%;
+    max-width: 520px;
+    flex-shrink: 0;
+  }
+}
+
+.panel::before {
+  content: "";
+  position: absolute;
+  inset: -30% 20% auto -20%;
+  height: 55%;
+  background: radial-gradient(
+    ellipse at 50% 40%,
+    rgba(232, 168, 56, 0.35) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+}
+
+.panelInner {
+  position: relative;
+  z-index: 1;
+}
+
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-weight: 700;
+  font-size: 1.125rem;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  text-decoration: none;
+  margin-bottom: 3rem;
+}
+
+.logoMark {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent) 0%, #e8a838 100%);
+  box-shadow: 0 1px 2px rgba(20, 26, 34, 0.06);
+}
+
+.panelTitle {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(1.75rem, 3vw, 2.25rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+  margin: 0 0 1rem;
+}
+
+.panelText {
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--ink-muted);
+  margin: 0 0 2rem;
+  max-width: 22rem;
+}
+
+.bullets {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.bullets li {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.75rem;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  margin-bottom: 1rem;
+}
+
+.bulletIcon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  background: var(--teal-soft);
+  color: var(--teal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.panelFooter {
+  position: relative;
+  z-index: 1;
+  font-size: 0.8125rem;
+  color: var(--ink-subtle);
+  padding-top: 2rem;
+}
+
+.panelFooter a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.panelFooter a:hover {
+  text-decoration: underline;
+}
+
+/* Form column */
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+@media (min-width: 960px) {
+  .main {
+    min-height: 0;
+  }
+}
+
+.mainTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+}
+
+@media (min-width: 960px) {
+  .mainTop {
+    border-bottom: none;
+    background: transparent;
+    padding: 1.5rem 2rem 0;
+    justify-content: flex-end;
+  }
+}
+
+.logoMobile {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  color: var(--ink);
+  text-decoration: none;
+}
+
+@media (min-width: 960px) {
+  .logoMobile {
+    display: none;
+  }
+}
+
+.logoMobileMark {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 7px;
+  background: linear-gradient(135deg, var(--accent) 0%, #e8a838 100%);
+}
+
+.backLink {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.backLink:hover {
+  color: var(--ink);
+}
+
+.mainBody {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.5rem 3rem;
+}
+
+@media (min-width: 960px) {
+  .mainBody {
+    padding: 2rem 2rem 4rem;
+  }
+}
+
+.card {
+  width: 100%;
+  max-width: 420px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-md);
+  padding: 2rem 1.75rem;
+}
+
+@media (min-width: 480px) {
+  .card {
+    padding: 2.25rem 2rem;
+  }
+}
+
+.cardHeader {
+  margin-bottom: 1.75rem;
+}
+
+.cardEyebrow {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin: 0 0 0.5rem;
+}
+
+.cardTitle {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: 1.65rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin: 0 0 0.35rem;
+}
+
+.cardSubtitle {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
+
+.cardSubtitle a {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.cardSubtitle a:hover {
+  text-decoration: underline;
+}
