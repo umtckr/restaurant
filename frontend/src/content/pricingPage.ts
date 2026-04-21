@@ -85,19 +85,19 @@ export const pricingTiers: PricingTier[] = [
   },
 ];
 
-export const comparisonRows = [
-  { feature: "Locations", starter: "1", group: "3", platform: "10" },
-  { feature: "Tables", starter: "10", group: "Unlimited", platform: "Unlimited" },
-  { feature: "Staff accounts", starter: "3", group: "25", platform: "Unlimited" },
-  { feature: "Menus", starter: "1", group: "10", platform: "Unlimited" },
-  { feature: "Orders/month", starter: "500", group: "Unlimited", platform: "Unlimited" },
-  { feature: "Payment methods", starter: "Cash", group: "All", platform: "All" },
-  { feature: "Online payments", starter: "—", group: "✓ (1.5%)", platform: "✓ (1.5%)" },
-  { feature: "Discount codes", starter: "—", group: "✓", platform: "✓" },
-  { feature: "Bill splitting", starter: "—", group: "✓", platform: "✓" },
-  { feature: "Reports", starter: "Today", group: "Full", platform: "Full + API" },
-  { feature: "Guest branding", starter: "Dinebird", group: "Custom", platform: "White-label" },
-  { feature: "Support", starter: "Docs", group: "Email", platform: "Priority + phone" },
+export const comparisonRows: Record<string, string>[] = [
+  { feature: "Locations", Starter: "1", Professional: "3", Enterprise: "10" },
+  { feature: "Tables", Starter: "10", Professional: "Unlimited", Enterprise: "Unlimited" },
+  { feature: "Staff accounts", Starter: "3", Professional: "25", Enterprise: "Unlimited" },
+  { feature: "Menus", Starter: "1", Professional: "10", Enterprise: "Unlimited" },
+  { feature: "Orders/month", Starter: "500", Professional: "Unlimited", Enterprise: "Unlimited" },
+  { feature: "Payment methods", Starter: "Cash", Professional: "All", Enterprise: "All" },
+  { feature: "Online payments", Starter: "—", Professional: "✓ (1.5%)", Enterprise: "✓ (1.5%)" },
+  { feature: "Discount codes", Starter: "—", Professional: "✓", Enterprise: "✓" },
+  { feature: "Bill splitting", Starter: "—", Professional: "✓", Enterprise: "✓" },
+  { feature: "Reports", Starter: "Basic", Professional: "Full", Enterprise: "Full" },
+  { feature: "Custom branding", Starter: "—", Professional: "✓", Enterprise: "✓" },
+  { feature: "White-label", Starter: "—", Professional: "—", Enterprise: "✓" },
 ];
 
 export const faqItems = [

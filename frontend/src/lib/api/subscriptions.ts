@@ -1,5 +1,5 @@
 import { apiUrl } from "./client";
-import { apiFetch, formatApiError } from "./http";
+import { apiFetch, formatApiError, unwrapResults } from "./http";
 
 export type Plan = {
   id: string;
@@ -24,8 +24,11 @@ export type Plan = {
   allowed_payment_methods: string[];
   online_payment_fee_percent: string;
   trial_days: number;
+  is_active: boolean;
   is_featured: boolean;
 };
+
+export type PlanWrite = Omit<Plan, "id">;
 
 export type SubscriptionStatus = "trialing" | "active" | "past_due" | "cancelled" | "expired";
 
@@ -66,4 +69,51 @@ export async function getMySubscription(): Promise<
   const data = await res.json().catch(() => ({}));
   if (!res.ok) return { ok: false, message: formatApiError(data) };
   return { ok: true, summary: data as SubscriptionSummary };
+}
+
+export async function listAdminPlans(): Promise<
+  { ok: true; plans: Plan[] } | { ok: false; message: string }
+> {
+  const res = await apiFetch("subscriptions/admin/plans/");
+  const data = await res.json().catch(() => []);
+  if (!res.ok) return { ok: false, message: formatApiError(data) };
+  return { ok: true, plans: unwrapResults<Plan>(data) };
+}
+
+export async function createPlan(
+  plan: PlanWrite,
+): Promise<{ ok: true; plan: Plan } | { ok: false; message: string }> {
+  const res = await apiFetch("subscriptions/admin/plans/", {
+    method: "POST",
+    body: JSON.stringify(plan),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) return { ok: false, message: formatApiError(data) };
+  return { ok: true, plan: data as Plan };
+}
+
+export async function updatePlan(
+  id: string,
+  plan: Partial<PlanWrite>,
+): Promise<{ ok: true; plan: Plan } | { ok: false; message: string }> {
+  const res = await apiFetch(`subscriptions/admin/plans/${id}/`, {
+    method: "PATCH",
+    body: JSON.stringify(plan),
+  });
+  const data = await res.json().catch(() => ({}));
+  if (!res.ok) return { ok: false, message: formatApiError(data) };
+  return { ok: true, plan: data as Plan };
+}
+
+export async function deletePlan(
+  id: string,
+): Promise<{ ok: true } | { ok: false; message: string }> {
+  const res = await apiFetch(`subscriptions/admin/plans/${id}/`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    return { ok: false, message: formatApiError(data) };
+  }
+  return { ok: true };
 }

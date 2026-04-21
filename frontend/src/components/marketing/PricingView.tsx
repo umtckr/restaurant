@@ -1,17 +1,149 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 import {
-  comparisonRows,
   faqItems,
   pricingCta,
   pricingHero,
-  pricingTiers,
+  pricingTiers as fallbackTiers,
+  comparisonRows as fallbackRows,
+  type PricingTier,
 } from "@/content/pricingPage";
+import { listPublicPlans, type Plan } from "@/lib/api/subscriptions";
 
 import { MarketingShell } from "./MarketingShell";
 import styles from "./MarketingInterior.module.css";
 
+function limitLabel(val: number): string {
+  return val === 0 ? "Unlimited" : String(val);
+}
+
+function buildFeaturesFromPlan(p: Plan): string[] {
+  const feats: string[] = [];
+  feats.push(
+    p.max_locations === 0
+      ? "Unlimited locations"
+      : p.max_locations === 1
+        ? "1 location"
+        : `Up to ${p.max_locations} locations`,
+  );
+  feats.push(p.max_tables === 0 ? "Unlimited tables" : `Up to ${p.max_tables} tables`);
+  feats.push(
+    p.max_staff === 0
+      ? "Unlimited staff accounts"
+      : `${p.max_staff} staff account${p.max_staff !== 1 ? "s" : ""}`,
+  );
+  feats.push(
+    p.max_menus === 0
+      ? "Unlimited menus"
+      : `${p.max_menus} menu${p.max_menus !== 1 ? "s" : ""}`,
+  );
+  feats.push(
+    p.max_orders_per_month === 0
+      ? "Unlimited orders"
+      : `${p.max_orders_per_month.toLocaleString()} orders/month`,
+  );
+
+  const pmLabels = p.allowed_payment_methods.map((m) =>
+    m === "cash" ? "Cash" : m === "card_terminal" ? "Card terminal" : m === "online" ? "Online" : m,
+  );
+  if (pmLabels.length > 0) feats.push(`${pmLabels.join(", ")} payments`);
+
+  if (p.has_online_payments) {
+    const fee = parseFloat(p.online_payment_fee_percent);
+    feats.push(fee > 0 ? `Online payments (${fee}% fee)` : "Online payments");
+  }
+  if (p.has_discounts) feats.push("Discount & promo codes");
+  if (p.has_bill_splitting) feats.push("Bill splitting");
+  if (p.has_full_reports) feats.push("Full reports");
+  if (p.has_custom_branding) feats.push("Custom branding");
+  if (p.has_white_label) feats.push("White-label guest pages");
+
+  return feats;
+}
+
+function formatPrice(price: string, currency: string): string {
+  const n = parseFloat(price);
+  if (isNaN(n) || n === 0) return "Free";
+  const sym = currency === "TRY" ? "₺" : currency === "USD" ? "$" : currency === "EUR" ? "€" : `${currency} `;
+  return `${sym}${n.toLocaleString()}/mo`;
+}
+
+function planToTier(p: Plan): PricingTier {
+  const mo = parseFloat(p.monthly_price);
+  const yr = parseFloat(p.annual_price);
+  let priceNote = "";
+  if (yr > 0 && mo > 0) {
+    const savings = Math.round(100 - (yr / (mo * 12)) * 100);
+    const sym = p.currency === "TRY" ? "₺" : p.currency === "USD" ? "$" : p.currency === "EUR" ? "€" : `${p.currency} `;
+    priceNote = `or ${sym}${yr.toLocaleString()}/year${savings > 0 ? ` (save ${savings}%)` : ""}`;
+  }
+  return {
+    name: p.name,
+    priceLabel: formatPrice(p.monthly_price, p.currency),
+    priceNote,
+    description: p.description,
+    cta: p.trial_days > 0 ? "Start free trial" : "Get started",
+    href: "/register",
+    featured: p.is_featured,
+    features: buildFeaturesFromPlan(p),
+  };
+}
+
+type ComparisonRow = { feature: string; [planName: string]: string };
+
+function buildComparisonRows(plans: Plan[]): ComparisonRow[] {
+  const cols = plans.map((p) => p.name);
+  const rows: ComparisonRow[] = [];
+
+  function row(feature: string, fn: (p: Plan) => string) {
+    const r: ComparisonRow = { feature };
+    plans.forEach((p) => { r[p.name] = fn(p); });
+    rows.push(r);
+  }
+
+  row("Locations", (p) => limitLabel(p.max_locations));
+  row("Tables", (p) => limitLabel(p.max_tables));
+  row("Staff accounts", (p) => limitLabel(p.max_staff));
+  row("Menus", (p) => limitLabel(p.max_menus));
+  row("Orders/month", (p) =>
+    p.max_orders_per_month === 0 ? "Unlimited" : p.max_orders_per_month.toLocaleString(),
+  );
+  row("Online payments", (p) => {
+    if (!p.has_online_payments) return "—";
+    const fee = parseFloat(p.online_payment_fee_percent);
+    return fee > 0 ? `✓ (${fee}%)` : "✓";
+  });
+  row("Discount codes", (p) => (p.has_discounts ? "✓" : "—"));
+  row("Bill splitting", (p) => (p.has_bill_splitting ? "✓" : "—"));
+  row("Reports", (p) => (p.has_full_reports ? "Full" : "Basic"));
+  row("Custom branding", (p) => (p.has_custom_branding ? "✓" : "—"));
+  row("White-label", (p) => (p.has_white_label ? "✓" : "—"));
+
+  void cols;
+  return rows;
+}
+
 export function PricingView() {
+  const [tiers, setTiers] = useState<PricingTier[]>(fallbackTiers);
+  const [compRows, setCompRows] = useState(fallbackRows);
+  const [planNames, setPlanNames] = useState<string[]>(["Starter", "Professional", "Enterprise"]);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      const r = await listPublicPlans();
+      if (cancelled || !r.ok || r.plans.length === 0) return;
+      const sorted = [...r.plans].sort((a, b) => a.sort_order - b.sort_order);
+      setTiers(sorted.map(planToTier));
+      setPlanNames(sorted.map((p) => p.name));
+      setCompRows(buildComparisonRows(sorted));
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
   return (
     <MarketingShell>
       <main className={styles.main}>
@@ -34,7 +166,7 @@ export function PricingView() {
               Plans
             </h2>
             <div className={styles.tierGrid}>
-              {pricingTiers.map((t) => (
+              {tiers.map((t) => (
                 <article
                   key={t.name}
                   className={`${styles.tier} ${t.featured ? styles.tierFeatured : ""}`}
@@ -75,18 +207,18 @@ export function PricingView() {
                 <thead>
                   <tr>
                     <th scope="col">Capability</th>
-                    <th scope="col">Starter</th>
-                    <th scope="col">Professional</th>
-                    <th scope="col">Enterprise</th>
+                    {planNames.map((name) => (
+                      <th key={name} scope="col">{name}</th>
+                    ))}
                   </tr>
                 </thead>
                 <tbody>
-                  {comparisonRows.map((row) => (
+                  {compRows.map((row) => (
                     <tr key={row.feature}>
                       <td>{row.feature}</td>
-                      <td>{row.starter}</td>
-                      <td>{row.group}</td>
-                      <td>{row.platform}</td>
+                      {planNames.map((name) => (
+                        <td key={name}>{row[name] ?? "—"}</td>
+                      ))}
                     </tr>
                   ))}
                 </tbody>

@@ -1,11 +1,21 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { apiFetch, formatApiError, unwrapPaged, type Paged } from "@/lib/api/http";
+import { PlatformPlansView } from "@/components/platform/PlatformPlansView";
 
 import { AdminInterior } from "./AdminInterior";
 import styles from "./AdminInterior.module.css";
+import tabStyles from "@/components/platform/PlatformSettingsView.module.css";
+
+type Tab = "plans" | "subscriptions";
+
+function tabFromParam(raw: string | null): Tab {
+  if (raw === "subscriptions") return "subscriptions";
+  return "plans";
+}
 
 type OrgSubscription = {
   id: string;
@@ -36,7 +46,7 @@ function fmtDate(iso: string | null) {
   });
 }
 
-export function PlatformSubscriptions() {
+function OrgSubscriptionsPanel() {
   const [loading, setLoading] = useState(true);
   const [paged, setPaged] = useState<Paged<OrgSubscription> | null>(null);
   const [error, setError] = useState("");
@@ -65,10 +75,7 @@ export function PlatformSubscriptions() {
   const totalPages = paged ? Math.max(1, Math.ceil(paged.count / 25)) : 1;
 
   return (
-    <AdminInterior
-      title="Subscriptions"
-      description="View and manage organization subscriptions across the platform."
-    >
+    <>
       <div className={styles.toolbar}>
         <select
           className={styles.btn}
@@ -161,6 +168,74 @@ export function PlatformSubscriptions() {
           </button>
         </div>
       )}
-    </AdminInterior>
+    </>
+  );
+}
+
+function PlatformSubscriptionsInner() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const tabKey = searchParams.get("tab");
+  const tab = useMemo(() => tabFromParam(tabKey), [tabKey]);
+
+  const setTab = useCallback(
+    (next: Tab) => {
+      const q = next === "plans" ? "" : `?tab=${next}`;
+      router.replace(`/platform/subscriptions${q}`, { scroll: false });
+    },
+    [router],
+  );
+
+  return (
+    <div style={{ maxWidth: 1200, margin: "0 auto" }}>
+      <div className={tabStyles.tabList} role="tablist" aria-label="Subscriptions sections">
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === "plans"}
+          className={`${tabStyles.tab} ${tab === "plans" ? tabStyles.tabActive : ""}`}
+          onClick={() => setTab("plans")}
+        >
+          Plans
+        </button>
+        <button
+          type="button"
+          role="tab"
+          aria-selected={tab === "subscriptions"}
+          className={`${tabStyles.tab} ${tab === "subscriptions" ? tabStyles.tabActive : ""}`}
+          onClick={() => setTab("subscriptions")}
+        >
+          Organization subscriptions
+        </button>
+      </div>
+
+      <div className={tabStyles.tabPanel} role="tabpanel">
+        {tab === "plans" ? <PlatformPlansView /> : null}
+        {tab === "subscriptions" ? (
+          <AdminInterior
+            title="Organization Subscriptions"
+            description="View and manage active subscriptions across all organizations."
+          >
+            <OrgSubscriptionsPanel />
+          </AdminInterior>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
+export function PlatformSubscriptions() {
+  return (
+    <Suspense
+      fallback={
+        <AdminInterior title="Subscriptions" description="">
+          <div style={{ padding: "2rem", textAlign: "center", color: "#8b919d" }}>
+            Loading…
+          </div>
+        </AdminInterior>
+      }
+    >
+      <PlatformSubscriptionsInner />
+    </Suspense>
   );
 }
